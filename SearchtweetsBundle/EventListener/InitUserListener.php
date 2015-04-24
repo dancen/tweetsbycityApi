@@ -41,6 +41,7 @@ class InitUserListener implements AppConstants {
         $tweet->setLocation(strtolower($data["city"]));
         $tweet->setInfos($data["tweets"]);
         $tweet->setCreatedAt(new \Datetime());
+        $tweet->setLastload(new \Datetime());
         
         // save the tweet object to database
         $this->appmanager->saveTweets($tweet);
