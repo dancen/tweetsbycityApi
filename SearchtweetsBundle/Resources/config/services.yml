@@ -5,8 +5,7 @@ parameters:
    api_searchtweets.app_manager.class: Api\SearchtweetsBundle\Doctrine\DoctrineAppManager
    api_searchtweets.manager_factory.class: Api\SearchtweetsBundle\Model\ManagerFactory
    api_searchtweets.ent_manager.class: Api\SearchtweetsBundle\Model\EntManagerLoader
-   api_searchtweets.order.class: Api\SearchtweetsBundle\Entity\TableOrder
-   api_searchtweets.table.class: Api\SearchtweetsBundle\Entity\RestTable
+
 
 services:
 #    api_searchtweets.example:
