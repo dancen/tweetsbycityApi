@@ -1,0 +1,101 @@
+parameters:
+#    api_searchtweets.example.class: Api\SearchtweetsBundle\Example
+
+   api_searchtweets.manager.class: Api\SearchtweetsBundle\Model\Manager
+   api_searchtweets.app_manager.class: Api\SearchtweetsBundle\Doctrine\DoctrineAppManager
+   api_searchtweets.manager_factory.class: Api\SearchtweetsBundle\Model\ManagerFactory
+   api_searchtweets.ent_manager.class: Api\SearchtweetsBundle\Model\EntManagerLoader
+   api_searchtweets.order.class: Api\SearchtweetsBundle\Entity\TableOrder
+   api_searchtweets.table.class: Api\SearchtweetsBundle\Entity\RestTable
+
+services:
+#    api_searchtweets.example:
+#        class: %api_searchtweets.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+
+   api_searchtweets.ent_manager:
+      class:   %api_searchtweets.ent_manager.class%
+      arguments:   [@doctrine.orm.tweets_entity_manager]
+      
+
+   api_searchtweets.manager:
+      class:   %api_searchtweets.manager.class%
+      arguments:   [@service_container,@api_searchtweets.manager_factory,@api_searchtweets.ent_manager]
+      
+
+   api_searchtweets.manager_factory:
+      class:   %api_searchtweets.manager_factory.class%
+      
+      
+   api_searchtweets.app_manager:
+      class:   %api_searchtweets.app_manager.class%
+      arguments:   [@service_container,@api_searchtweets.manager_factory,@api_searchtweets.ent_manager]
+      
+
+   api_searchtweets.filter_manager_event:
+      class: Api\SearchtweetsBundle\Event\FilterManagerEvent
+      arguments:   [@service_container,@api_searchtweets.manager_factory]
+         
+         
+         
+         
+         
+   api_searchtweets.save.cache_listener:
+      class: Api\SearchtweetsBundle\EventListener\SaveTweetsListener
+      arguments:   [@api_searchtweets.filter_manager_event]
+      tags:
+         - { name: kernel.event_listener, event: save.cache, method: onProcess } 
+         
+         
+   api_searchtweets.init.user_listener:
+      class: Api\SearchtweetsBundle\EventListener\InitUserListener
+      arguments:   [@api_searchtweets.filter_manager_event]
+      tags:
+         - { name: kernel.event_listener, event: init.user, method: onProcess }
+         
+         
+   api_searchtweets.check.expired_listener:
+      class: Api\SearchtweetsBundle\EventListener\CheckExpiredListener
+      arguments:   [@api_searchtweets.filter_manager_event]
+      tags:
+         - { name: kernel.event_listener, event: check.expired, method: onProcess }
+         
+         
+   api_searchtweets.service.loadcached_listener:
+      class: Api\SearchtweetsBundle\EventListener\LoadCacheListener
+      arguments:   [@api_searchtweets.filter_manager_event]
+      tags:
+         - { name: kernel.event_listener, event: service.loadcached, method: onProcess } 
+         
+         
+   api_searchtweets.service.history_listener:
+      class: Api\SearchtweetsBundle\EventListener\GetHistoryListener
+      arguments:   [@api_searchtweets.filter_manager_event]
+      tags:
+         - { name: kernel.event_listener, event: service.history, method: onProcess } 
+         
+         
+   api_searchtweets.location.data_listener:
+      class: Api\SearchtweetsBundle\EventListener\GetLocationDataListener
+      arguments:   [@api_searchtweets.filter_manager_event]
+      tags:
+         - { name: kernel.event_listener, event: location.data, method: onProcess } 
+         
+         
+   api_searchtweets.service.search_listener:
+      class: Api\SearchtweetsBundle\EventListener\ServiceSearchListener
+      arguments:   [@api_searchtweets.filter_manager_event]
+      tags:
+         - { name: kernel.event_listener, event: service.search, method: onProcess } 
+         
+         
+   api_searchtweets.load.history_listener:
+      class: Api\SearchtweetsBundle\EventListener\LoadHistoryListener
+      arguments:   [@api_searchtweets.filter_manager_event]
+      tags:
+         - { name: kernel.event_listener, event: load.history, method: onProcess } 
+         
+         
+         
+                  
+   

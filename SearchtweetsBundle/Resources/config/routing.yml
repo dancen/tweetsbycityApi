@@ -1,0 +1,27 @@
+api_searchtweets_index:
+    pattern:  /tweets/index
+    defaults: { _controller: "ApiSearchtweetsBundle:Default:index" }    
+    
+api_searchtweets_search:
+    pattern:  /tweets/search
+    defaults: { _controller: ApiSearchtweetsBundle:Default:search } 
+    requirements: { _method: get }    
+    
+api_searchtweets_history:
+    pattern:  /tweets/history
+    defaults: { _controller: ApiSearchtweetsBundle:Default:history } 
+    requirements: { _method: get }
+    
+api_searchtweets_location:
+    pattern:  /tweets/location/data
+    defaults: { _controller: ApiSearchtweetsBundle:Default:locationData } 
+    requirements: { _method: get }
+    
+api_searchtweets_load:
+    pattern:  /tweets/history/{id}
+    defaults: { _controller: ApiSearchtweetsBundle:Default:loadTweets } 
+    requirements: { _method: get }
+    
+
+        
+    
