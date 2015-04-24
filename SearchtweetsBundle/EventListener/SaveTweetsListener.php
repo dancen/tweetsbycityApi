@@ -28,6 +28,8 @@ class SaveTweetsListener implements AppConstants {
                  
         // get the user stored in cookie from the event object
         $data = $this->event->getData();
+        
+       
        
         // create a new Tweet entity        
         $tweet = AppFactory::createTweet($data["user"]);

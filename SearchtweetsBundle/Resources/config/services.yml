@@ -6,7 +6,6 @@ parameters:
    api_searchtweets.manager_factory.class: Api\SearchtweetsBundle\Model\ManagerFactory
    api_searchtweets.ent_manager.class: Api\SearchtweetsBundle\Model\EntManagerLoader
 
-
 services:
 #    api_searchtweets.example:
 #        class: %api_searchtweets.example.class%
@@ -14,7 +13,7 @@ services:
 
    api_searchtweets.ent_manager:
       class:   %api_searchtweets.ent_manager.class%
-      arguments:   [@doctrine.orm.tweets_entity_manager]
+      arguments:   [@doctrine.orm.entity_manager]
       
 
    api_searchtweets.manager:
@@ -44,14 +43,7 @@ services:
       arguments:   [@api_searchtweets.filter_manager_event]
       tags:
          - { name: kernel.event_listener, event: save.cache, method: onProcess } 
-         
-         
-   api_searchtweets.init.user_listener:
-      class: Api\SearchtweetsBundle\EventListener\InitUserListener
-      arguments:   [@api_searchtweets.filter_manager_event]
-      tags:
-         - { name: kernel.event_listener, event: init.user, method: onProcess }
-         
+                  
          
    api_searchtweets.check.expired_listener:
       class: Api\SearchtweetsBundle\EventListener\CheckExpiredListener

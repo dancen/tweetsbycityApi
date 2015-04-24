@@ -7,6 +7,7 @@ use Api\SearchtweetsBundle\Model\AppConstants;
 use Api\SearchtweetsBundle\Model\AppFactory;
 use Symfony\Component\HttpFoundation\Response;
 
+
 /**
  * Api\SearchtweetsBundle\EventListener\ServiceSearchListener
  *
@@ -28,11 +29,13 @@ class ServiceSearchListener implements AppConstants {
 
     public function onProcess() {
 
+        $user = $this->event->getData();
+
         // get the request http object        
         $city = $this->event->getRequest()->get("city");
         $lat = $this->event->getRequest()->get("lat");
         $lng = $this->event->getRequest()->get("lng");
-        
+
         // set authentication parameters
         $settings = array(
             'oauth_access_token' => $this->container->getParameter("oauth_access_token"),
@@ -44,11 +47,12 @@ class ServiceSearchListener implements AppConstants {
         // get the max number of tweets - set as parameter
         $count = $this->container->getParameter("max_tweets_returned");
 
+
+
         // set the searc/tweets url and query
         $url = "https://api.twitter.com/1.1/search/tweets.json";
         $query = "?q=" . urlencode($city) . "&geocode=" . $lat . "," . $lng . ",50mi&result_type=recent";
         //&count=".$count;
-        
         // execute the Twitter calls
         $requestMethod = 'GET';
         $twitter = AppFactory::createTwitterApi($settings);
@@ -56,10 +60,36 @@ class ServiceSearchListener implements AppConstants {
                 ->buildOauth($url, $requestMethod)
                 ->performRequest();
 
-        
-        $this->event->setData(array("city" => $city,"tweets" => $twitters));
-        $this->event->setResponse($twitters);        
-        
+
+        $this->event->setData(array("city" => $city, "tweets" => $twitters));
+        $this->event->setResponse($twitters);
+
+
+        // create a user cookie in order
+        // to manage history
+       
+        if (!$user) {
+
+            // generate a random user name
+            $user = md5(uniqid(rand(), true));
+
+            // create the cookie to retrieve the history by user
+            $cookie = AppFactory::createCookie(AppConstants::USER_NAME_COOKIE, $user);
+
+            // create a new Tweet entity        
+            $tweet = AppFactory::createTweet($user);
+            $tweet->setLocation(strtolower($city));
+            $tweet->setInfos($twitters);
+            $tweet->setCreatedAt(new \Datetime());
+            $tweet->setLastload(new \Datetime());
+
+            // save the tweet object to database
+            $this->appmanager->saveTweets($tweet);
+
+            $response = new Response();
+            $response->headers->setCookie($cookie);
+            $response->send();
+        }
     }
 
 }

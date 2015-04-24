@@ -93,7 +93,7 @@ class AppFactory {
     
     public static function createCookie( $name, $value ){
         
-        return new \Symfony\Component\HttpFoundation\Cookie( $name, $value , time() + (3600 * 48));
+        return new \Symfony\Component\HttpFoundation\Cookie( $name, $value , time() + (3600 * 48),'/', null, false, false);
     }    
     
     

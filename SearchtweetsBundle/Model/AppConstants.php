@@ -16,7 +16,7 @@ interface AppConstants {
     * BUNDLE - bundle name
     */
     const BUNDLE = "ApiSearchtweetsBundle";
-    const USER_NAME_COOKIE = "myAppUser";
+    const USER_NAME_COOKIE = "tweetSearchUser";
    
     
 

@@ -12,13 +12,6 @@ final class ApiSearchtweetsEvents
 {
        
     
-    /**
-     * The INIT_USER event occurs when the user session is initialized.
-     *
-     * This event initialize the user cookie and session data
-     * The event listener method receives a Api\SearchtweetsBundle\Event\FilterManagerEvent instance.
-     */
-    const INIT_USER = 'init.user';
     
     /**
      * The LOCATION_DATA event occurs when the user session is initialized.

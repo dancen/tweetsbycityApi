@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Api\SearchtweetsBundle\ApiSearchtweetsEvents;
 use Api\SearchtweetsBundle\Model\AppConstants;
+use Api\SearchtweetsBundle\Model\AppFactory;
+
 
 class DefaultController extends Controller {
     
@@ -58,18 +60,19 @@ class DefaultController extends Controller {
      */
     
     public function searchAction() {
-
+        
+        
         // get the cookie data from the client       
         $request = $this->get('request');
         $cookies = $request->cookies;
         $user = $cookies->get(AppConstants::USER_NAME_COOKIE);
         
-               
-        
+                
 
         /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
         $dispatcher = $this->container->get('event_dispatcher');
         $event = $this->get('api_searchtweets.filter_manager_event');
+        
 
 
         // if the user is not found as a cookie value
@@ -79,12 +82,11 @@ class DefaultController extends Controller {
         if (!$user) {
 
             
-
             // perform the first search
+            $event->setData($user);
             $dispatcher->dispatch(ApiSearchtweetsEvents::SERVICE_SEARCH);
-
-            // init the new user              
-            $dispatcher->dispatch(ApiSearchtweetsEvents::INIT_USER);
+            
+            
         } else {
 
             
@@ -98,21 +100,22 @@ class DefaultController extends Controller {
             $event->setData($user);
             $dispatcher->dispatch(ApiSearchtweetsEvents::CHECK_EXPIRED);
             $isexpired = $event->getResponse();
+            
+            
 
-
-            if (!$isexpired) {
-                
-                
-
-                // not expired - load from cache                    
+            if (!$isexpired) {                
+                            
+                // not expired - load from cache 
+                $event->setData($user);
                 $dispatcher->dispatch(ApiSearchtweetsEvents::SERVICE_LOAD_CACHED);
+                
             } else {
                 
                 
-
-                // expired - perform a new search                   
+                // expired - perform a new search            
+                $event->setData($user);
                 $dispatcher->dispatch(ApiSearchtweetsEvents::SERVICE_SEARCH);
-                $event->setData(array_merge($event->getData(), array("user" => $user)));
+                $event->setData(array_merge($event->getData(), array("user" => $user)));                               
                 $dispatcher->dispatch(ApiSearchtweetsEvents::SAVE_CACHE);
             }
         }
@@ -144,6 +147,8 @@ class DefaultController extends Controller {
         $request = $this->get('request');
         $cookies = $request->cookies;
         $user = $cookies->get(AppConstants::USER_NAME_COOKIE);
+        
+       
         
         
         /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
