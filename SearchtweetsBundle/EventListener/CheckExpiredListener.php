@@ -40,7 +40,7 @@ class CheckExpiredListener implements AppConstants {
             $expiryDate = new \DateTime('-1 hour');
 
             // compare objects
-            if ($lastinfodatetime->getTimestamp() < $expiryDate->getTimestamp()) {
+            if ($lastinfodatetime->getTimestamp() > $expiryDate->getTimestamp()) {
 
                 // update the lastload data
                 $tweet = $lastinfo;
