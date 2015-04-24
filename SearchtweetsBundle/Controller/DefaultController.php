@@ -83,7 +83,6 @@ class DefaultController extends Controller {
 
             
             // perform the first search
-            $event->setData($user);
             $dispatcher->dispatch(ApiSearchtweetsEvents::SERVICE_SEARCH);
             
             
@@ -114,8 +113,7 @@ class DefaultController extends Controller {
                 
                 // expired - perform a new search            
                 $event->setData($user);
-                $dispatcher->dispatch(ApiSearchtweetsEvents::SERVICE_SEARCH);
-                $event->setData(array_merge($event->getData(), array("user" => $user)));                               
+                $dispatcher->dispatch(ApiSearchtweetsEvents::SERVICE_SEARCH);                             
                 $dispatcher->dispatch(ApiSearchtweetsEvents::SAVE_CACHE);
             }
         }

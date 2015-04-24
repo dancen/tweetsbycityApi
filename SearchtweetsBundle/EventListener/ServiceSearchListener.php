@@ -61,7 +61,7 @@ class ServiceSearchListener implements AppConstants {
                 ->performRequest();
 
 
-        $this->event->setData(array("city" => $city, "tweets" => $twitters));
+        $this->event->setData(array("city" => $city, "user" => $user, "tweets" => $twitters));
         $this->event->setResponse($twitters);
 
 
